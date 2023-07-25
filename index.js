@@ -53,7 +53,7 @@ const performers = [
     name: "Neno Belan & Fiumens",
     about: "Croatian rock band",
     startingTimeOfConcert: `${festivalDays[1]} - 21:00`,
-    endingTimeOfConcert: `${festivalDays[0]} - 22:20`,
+    endingTimeOfConcert: `${festivalDays[1]} - 22:20`,
     stage: stages[1],
     numberOfVisitors: 10000,
   },
@@ -79,105 +79,102 @@ const performers = [
 
 let pin = "1950";
 
-performers.forEach((p) => console.log(p));
+const performersByTimeAsc = performers.sort((a, b) =>
+  a.startingTimeOfConcert > b.startingTimeOfConcert ? 1 : -1
+);
 
-// detaljni pregled izvodaca
-const showPerformerDetails = () => {
-  // navigacija >, < i izlaz
-  let choice = 0;
+// 1 - detaljni pregled izvodaca
+const showPerformerDetails = (performersByTime) => {
+  let choice = "0";
+
   do {
-    const performersByTime = performers.sort((a, b) => {
-      return a.startingTimeOfConcert - b.startingTimeOfConcert;
-    });
-
     for (let i = 0; i < performersByTime.length; i++) {
-      console.log(i);
-      if (i === 0)
-        alert(
-          `${performersByTime[i].name}, ${performersByTime[i].about}, ${performersByTime[i].startingTimeOfConcert}`
-        );
-
       choice = prompt(`
       Enter '>' for next performer
       Enter '<' for previous performer
       Enter '0' for exit
       `);
 
-      console.log(`i = ${i}, choice = ${choice}`);
-
       switch (choice) {
         case ">":
-          // i !== performersByTime.length ? i++ : i;
           alert(
             `${performersByTime[i].name}, ${performersByTime[i].about}, ${performersByTime[i].startingTimeOfConcert}`
           );
           break;
+
         case "<":
-          i !== 0 ? i - 2 : i;
+          if (i === 0) {
+            alert("Invalid choice, try with '>'");
+            break;
+          } else if (i === 1) {
+            i -= 1;
+            alert(
+              `${performersByTime[i].name}, ${performersByTime[i].about}, ${performersByTime[i].startingTimeOfConcert}`
+            );
+            break;
+          }
+          i -= 2;
           alert(
             `${performersByTime[i].name}, ${performersByTime[i].about}, ${performersByTime[i].startingTimeOfConcert}`
           );
           break;
+
         case "0":
           return;
+
         default:
           alert("Wrong input");
       }
     }
   } while (choice !== "0");
-  return;
 };
 
-// pregled svih izvodaca po danu koncerta
+// 2 - pregled svih izvodaca po danu koncerta
 const showAllPerformersByDay = (day) => {
   const result = performers
-    .filter(day.startingTimeOfConcert)
+    .filter((p) => p.startingTimeOfConcert.includes(day)) // popravit da ne vata i sate (18)
     .map((p) => `${p.name}, ${p.stage}`);
-  console.log(result);
+  alert(result);
 };
-// showAllPerformersByDay("18");
+showAllPerformersByDay("18");
 
-// ispis izvodaca po bini
+// 3 - ispis izvodaca po bini
 const showAllPerformersByStage = (stage) => {
-  performers.filter((performer) => {
-    if (performer.stage === stage)
-      console.log(`${performer.name}, ${performer.startingTimeOfConcert}`);
-  });
+  const result = performers
+    .filter((p) => p.stage.toLowerCase() === stage.toLowerCase())
+    .map((p) => `\n${p.name}, ${p.startingTimeOfConcert}`);
+  alert(`Performers by ${stage}:\n ${result}`);
 };
-showAllPerformersByStage("Main stage");
+// showAllPerformersByStage("Main stage");
 
-// ispis statistike
+// 4 - ispis statistike
 const showAllPerformersByNumberOfVisitorsDesc = () => {
-  // performers.forEach((p) => {});
-  alert("\nStatistic for DAILY STAGE");
-  performers
+  const visitorsForDailyStage = performers
     .filter((p) => p.stage === "Daily stage")
     .sort((a, b) => b.numberOfVisitors - a.numberOfVisitors)
-    .map((p) =>
-      alert(`Performer: ${p.name}
-Number of visitors: ${p.numberOfVisitors}`)
+    .map(
+      (p) => `\nPerformer: ${p.name}, number of visitors: ${p.numberOfVisitors}`
     );
+  alert(`\nVisitors for daily stage \n${visitorsForDailyStage}`);
 
-  alert("\nStatistic for MAIN STAGE");
-  performers
+  const visitorsForMainStage = performers
     .filter((p) => p.stage === "Main stage")
     .sort((a, b) => b.numberOfVisitors - a.numberOfVisitors)
-    .map((p) =>
-      alert(`Performer: ${p.name}
-Number of visitors: ${p.numberOfVisitors}`)
+    .map(
+      (p) => `\nPerformer: ${p.name}, number of visitors: ${p.numberOfVisitors}`
     );
+  alert(`\nVisitors for main stage \n${visitorsForMainStage}`);
 
-  alert("\nStatistic for AFTER STAGE");
-  performers
+  const visitorsForAfterStage = performers
     .filter((p) => p.stage === "After stage")
     .sort((a, b) => b.numberOfVisitors - a.numberOfVisitors)
-    .map((p) =>
-      alert(`Performer: ${p.name}
-Number of visitors: ${p.numberOfVisitors}`)
+    .map(
+      (p) => `\nPerformer: ${p.name}, number of visitors: ${p.numberOfVisitors}`
     );
+  alert(`\nVisitors for after stage \n${visitorsForAfterStage}`);
 };
 
-// prosjek posjeta po stageu
+// 5 - prosjek posjeta po stageu
 const showPercentageVisitorsOfAStage = (stage) => {
   const sum = performers
     .filter((p) => p.stage === stage)
@@ -185,17 +182,25 @@ const showPercentageVisitorsOfAStage = (stage) => {
       a += c.numberOfVisitors;
       return a;
     }, 0);
-  const performersBySameStage = performers.filter((p) => p.stage === stage);
-  performersBySameStage.forEach((p) => {
-    console.log(
-      `${p.name} has ${((p.numberOfVisitors / sum) * 100).toFixed(
+  // const performersBySameStage = performers.filter((p) => p.stage === stage);
+  // performersBySameStage.forEach((p) => {
+  //   console.log(
+  //     `${p.name} has ${((p.numberOfVisitors / sum) * 100).toFixed(
+  //       2
+  //     )}% visitors.`
+  //   );
+  // });
+  const performersBySameStage = performers
+    .filter((p) => p.stage === stage)
+    .map((p) => {
+      return `\n${p.name} has ${((p.numberOfVisitors / sum) * 100).toFixed(
         2
-      )}% visitors.`
-    );
-  });
+      )}% visitors.`;
+    });
+  alert(`Daily percentage of visitors for ${stage}\n ${performersBySameStage}`);
 };
-showPercentageVisitorsOfAStage("Daily stage");
 
+// 6 - admin panel
 const showAdminPanel = () => {
   let userInputForPin = prompt("Enter PIN to acces admin panel:");
   let choice = "0";
@@ -248,32 +253,48 @@ const showMainMenu = () => {
 
     switch (choice) {
       case "1":
-        showPerformerDetails();
+        showPerformerDetails(performersByTimeAsc);
         break;
-      case "2":
-        let choice = "0";
-        do {
-          choice = prompt(
-            "Enter (number) day of concert: '18' or '19' or '20'"
-          );
-          console.log(choice);
-        } while (choice !== "18" || choice !== "19" || choice !== "20");
 
+      case "2":
+        // PREPRAVIT
+        let input = "0";
+        do {
+          input = prompt("Enter (number) day of concert: '18' or '19' or '20'");
+          console.log(input);
+        } while (input !== "18" || input !== "19" || input !== "20");
         showAllPerformersByDay(choice);
         break;
+
       case "3":
+        // PREPRAVIT
+        let input1 = "0";
+        do {
+          input1 = prompt(
+            "Enter (number) day of concert: '18' or '19' or '20'"
+          );
+          console.log(input1);
+        } while (input1 !== "18" || input1 !== "19" || input1 !== "20");
+        showAllPerformersByStage("Main stage");
         break;
+
       case "4":
         showAllPerformersByNumberOfVisitorsDesc();
         break;
+
       case "5":
+        // PREPRAVIT
+        showPercentageVisitorsOfAStage("Daily stage");
         break;
+
       case "6":
         showAdminPanel();
         break;
+
       case "0":
         alert("Exiting console application..");
         break;
+
       default:
         alert("Invalid choice..");
     }
