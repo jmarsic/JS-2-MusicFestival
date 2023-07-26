@@ -83,6 +83,24 @@ const performersByTimeAsc = performers.sort((a, b) =>
   a.startingTimeOfConcert > b.startingTimeOfConcert ? 1 : -1
 );
 
+// utils
+const validationAndFormatInputFromUser = () => {
+  let userInputForStage = "0";
+  do {
+    userInputForStage = prompt(
+      "Enter stage: 'Daily' or 'Main' or 'After'"
+    ).toLowerCase();
+  } while (
+    userInputForStage !== "daily" &&
+    userInputForStage !== "main" &&
+    userInputForStage !== "after"
+  );
+  const firstLetter = userInputForStage.charAt(0).toUpperCase();
+  const restOfInput = userInputForStage.slice(1);
+
+  return firstLetter + restOfInput + " stage";
+};
+
 // 1 - detaljni pregled izvodaca
 const showPerformerDetails = (performersByTime) => {
   let choice = "0";
@@ -130,13 +148,12 @@ const showPerformerDetails = (performersByTime) => {
 };
 
 // 2 - pregled svih izvodaca po danu koncerta
-const showAllPerformersByDay = (day) => {
+function showAllPerformersByDay(day) {
   const result = performers
     .filter((p) => p.startingTimeOfConcert.includes(day)) // popravit da ne vata i sate (18)
-    .map((p) => `${p.name}, ${p.stage}`);
+    .map((p) => `\n${p.name}, ${p.stage}`);
   alert(result);
-};
-showAllPerformersByDay("18");
+}
 
 // 3 - ispis izvodaca po bini
 const showAllPerformersByStage = (stage) => {
@@ -145,7 +162,6 @@ const showAllPerformersByStage = (stage) => {
     .map((p) => `\n${p.name}, ${p.startingTimeOfConcert}`);
   alert(`Performers by ${stage}:\n ${result}`);
 };
-// showAllPerformersByStage("Main stage");
 
 // 4 - ispis statistike
 const showAllPerformersByNumberOfVisitorsDesc = () => {
@@ -182,14 +198,7 @@ const showPercentageVisitorsOfAStage = (stage) => {
       a += c.numberOfVisitors;
       return a;
     }, 0);
-  // const performersBySameStage = performers.filter((p) => p.stage === stage);
-  // performersBySameStage.forEach((p) => {
-  //   console.log(
-  //     `${p.name} has ${((p.numberOfVisitors / sum) * 100).toFixed(
-  //       2
-  //     )}% visitors.`
-  //   );
-  // });
+
   const performersBySameStage = performers
     .filter((p) => p.stage === stage)
     .map((p) => {
@@ -257,25 +266,32 @@ const showMainMenu = () => {
         break;
 
       case "2":
-        // PREPRAVIT
-        let input = "0";
+        let dayOfConcert = "0";
         do {
-          input = prompt("Enter (number) day of concert: '18' or '19' or '20'");
-          console.log(input);
-        } while (input !== "18" || input !== "19" || input !== "20");
-        showAllPerformersByDay(choice);
+          dayOfConcert = prompt(
+            "Enter (number) day of concert: '18' or '19' or '20'"
+          );
+        } while (
+          dayOfConcert !== "18" &&
+          dayOfConcert !== "19" &&
+          dayOfConcert !== "20"
+        );
+        showAllPerformersByDay(`${dayOfConcert}.`);
         break;
 
       case "3":
-        // PREPRAVIT
-        let input1 = "0";
+        let enteredStage = "0";
         do {
-          input1 = prompt(
-            "Enter (number) day of concert: '18' or '19' or '20'"
-          );
-          console.log(input1);
-        } while (input1 !== "18" || input1 !== "19" || input1 !== "20");
-        showAllPerformersByStage("Main stage");
+          enteredStage = prompt(
+            "Enter stage: 'Daily' or 'Main' or 'After'"
+          ).toLowerCase();
+        } while (
+          enteredStage !== "daily" &&
+          enteredStage !== "main" &&
+          enteredStage !== "after"
+        );
+        enteredStage = enteredStage + " stage";
+        showAllPerformersByStage(enteredStage);
         break;
 
       case "4":
@@ -283,8 +299,8 @@ const showMainMenu = () => {
         break;
 
       case "5":
-        // PREPRAVIT
-        showPercentageVisitorsOfAStage("Daily stage");
+        const userInputForStage = validationAndFormatInputFromUser();
+        showPercentageVisitorsOfAStage(userInputForStage);
         break;
 
       case "6":
