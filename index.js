@@ -1,14 +1,14 @@
 const stages = ["Daily stage", "Main stage", "After stage"];
 
-const festivalDays = ["18. srp 2024.", "19. srp 2024.", "20. srp 2024."];
+const festivalDays = ["18. 7. 2024.", "19. 7. 2024.", "20. 7. 2024."];
 
 const performers = [
   {
     id: 1,
     name: "TBF",
     about: "Croatian hip hop group",
-    startingTimeOfConcert: `${festivalDays[0]} - 16:00`,
-    endingTimeOfConcert: `${festivalDays[0]} - 17:20`,
+    startingTimeOfConcert: `${festivalDays[0]} 16:00`,
+    endingTimeOfConcert: `${festivalDays[0]} 17:20`,
     stage: stages[0],
     numberOfVisitors: 3000,
   },
@@ -16,8 +16,8 @@ const performers = [
     id: 2,
     name: "Mort",
     about: "Croatian r'n'r band",
-    startingTimeOfConcert: `${festivalDays[0]} - 17:30`,
-    endingTimeOfConcert: `${festivalDays[0]} - 18:50`,
+    startingTimeOfConcert: `${festivalDays[0]} 17:30`,
+    endingTimeOfConcert: `${festivalDays[0]} 18:50`,
     stage: stages[0],
     numberOfVisitors: 4000,
   },
@@ -25,8 +25,8 @@ const performers = [
     id: 3,
     name: "Dalmatino",
     about: "Croatian pop group",
-    startingTimeOfConcert: `${festivalDays[1]} - 17:30`,
-    endingTimeOfConcert: `${festivalDays[1]} - 18:50`,
+    startingTimeOfConcert: `${festivalDays[1]} 17:30`,
+    endingTimeOfConcert: `${festivalDays[1]} 18:50`,
     stage: stages[0],
     numberOfVisitors: 5000,
   },
@@ -34,8 +34,8 @@ const performers = [
     id: 4,
     name: "Daleka Obala",
     about: "Croatian rock band",
-    startingTimeOfConcert: `${festivalDays[0]} - 19:30`,
-    endingTimeOfConcert: `${festivalDays[0]} - 20:50`,
+    startingTimeOfConcert: `${festivalDays[0]} 19:30`,
+    endingTimeOfConcert: `${festivalDays[0]} 20:50`,
     stage: stages[1],
     numberOfVisitors: 8000,
   },
@@ -43,8 +43,8 @@ const performers = [
     id: 5,
     name: "Belfast Food",
     about: "Croatian irish folk band",
-    startingTimeOfConcert: `${festivalDays[0]} - 21:00`,
-    endingTimeOfConcert: `${festivalDays[0]} - 22:20`,
+    startingTimeOfConcert: `${festivalDays[0]} 21:00`,
+    endingTimeOfConcert: `${festivalDays[0]} 22:20`,
     stage: stages[1],
     numberOfVisitors: 9000,
   },
@@ -52,8 +52,8 @@ const performers = [
     id: 6,
     name: "Neno Belan & Fiumens",
     about: "Croatian rock band",
-    startingTimeOfConcert: `${festivalDays[1]} - 21:00`,
-    endingTimeOfConcert: `${festivalDays[1]} - 22:20`,
+    startingTimeOfConcert: `${festivalDays[1]} 21:00`,
+    endingTimeOfConcert: `${festivalDays[1]} 22:20`,
     stage: stages[1],
     numberOfVisitors: 10000,
   },
@@ -61,8 +61,8 @@ const performers = [
     id: 7,
     name: "Psihomodo Pop",
     about: "Croatian rock band",
-    startingTimeOfConcert: `${festivalDays[1]} - 22:30`,
-    endingTimeOfConcert: `${festivalDays[1]} - 23:50`,
+    startingTimeOfConcert: `${festivalDays[1]} 22:30`,
+    endingTimeOfConcert: `${festivalDays[1]} 23:50`,
     stage: stages[1],
     numberOfVisitors: 10200,
   },
@@ -70,8 +70,8 @@ const performers = [
     id: 8,
     name: "Kuzma & Shaka Zulu",
     about: "Croatian pop & dance band",
-    startingTimeOfConcert: `${festivalDays[2]} - 00:00`,
-    endingTimeOfConcert: `${festivalDays[2]} - 01:30`,
+    startingTimeOfConcert: `${festivalDays[2]} 00:00`,
+    endingTimeOfConcert: `${festivalDays[2]} 01:30`,
     stage: stages[2],
     numberOfVisitors: 7000,
   },
@@ -84,6 +84,14 @@ const performersByTimeAsc = performers.sort((a, b) =>
 );
 
 // utils
+const capitalize = (string) => {
+  const word = string.toLowerCase();
+  const firstLetter = word.charAt(0).toUpperCase();
+  const restOfString = word.slice(1);
+
+  return firstLetter + restOfString;
+};
+
 const validationAndFormatInputFromUser = () => {
   let userInputForStage = "0";
   do {
@@ -99,6 +107,40 @@ const validationAndFormatInputFromUser = () => {
   const restOfInput = userInputForStage.slice(1);
 
   return firstLetter + restOfInput + " stage";
+};
+
+const checkDate = (performerDateOfConcert) => {
+  const date = new Date();
+
+  const performerDateInfo = performerDateOfConcert.split(" ");
+  const performerHourInfo = performerDateInfo[3].split(":");
+
+  const performerDate = parseInt(performerDateInfo[0].slice(0, -1));
+  const performerMonth = parseInt(performerDateInfo[1].slice(0, -1));
+  const performerYear = parseInt(performerDateInfo[2].slice(0, -1));
+  const performerHour = parseInt(performerHourInfo[0]);
+  const performerMinutes = parseInt(performerHourInfo[1]);
+
+  const dateMonth = date.getMonth() + 1;
+  const dateDate = date.getDate();
+  const dateYear = date.getFullYear();
+  const dateHour = date.getHours();
+  const dateMinutes = date.getMinutes();
+
+  if (dateYear > performerYear) {
+    return 0;
+  } else if (dateYear < performerYear && dateMonth > performerMonth) {
+    return 1;
+  } else if (dateYear === performerYear && dateMonth > performerMonth) {
+    return 0;
+  } else if (dateYear === performerYear && dateDate > performerDate) {
+    return 0;
+  } else if (dateYear === performerYear && dateHour > performerHour) {
+    return 0;
+  } else if (dateYear === performerYear && dateMinutes >= performerMinutes) {
+    return 0;
+  }
+  return 1;
 };
 
 // 1 - detaljni pregled izvodaca
@@ -209,13 +251,143 @@ const showPercentageVisitorsOfAStage = (stage) => {
   alert(`Daily percentage of visitors for ${stage}\n ${performersBySameStage}`);
 };
 
+// admin functions
+const enterNumberOfVisitors = () => {
+  let choice = "";
+
+  do {
+    choice = prompt(
+      "\nEnter for which performer you want to change number of visitors"
+    );
+
+    const matchingIndex = performers.findIndex(
+      (p) => p.name.toLowerCase() === choice.toLowerCase()
+    );
+
+    if (matchingIndex !== -1) {
+      performers[matchingIndex].numberOfVisitors = prompt(
+        `\nEnter number of visitors for ${performers[matchingIndex].name}`
+      );
+      alert(
+        `${performers[matchingIndex].name}, new number of visitors: ${performers[matchingIndex].numberOfVisitors}`
+      );
+      break;
+    } else alert("\nDidn't find that performer, try something else");
+  } while (true);
+};
+
+const addNewPerformer = () => {
+  const name = capitalize(prompt("Enter performer name:"));
+  const about = capitalize(prompt("Enter something about performer:"));
+  let day = "";
+  let month = "";
+  let year = "";
+  let hours = "";
+  let minutes = "";
+  do {
+    day = parseInt(prompt("Enter day of concert"));
+    month = parseInt(prompt("Enter month of concert"));
+    year = parseInt(prompt("Enter year of concert"));
+    hours = parseInt(prompt("Enter hours of concert"));
+    minutes = parseInt(prompt("Enter minutes of concert"));
+  } while (
+    !(day > 0 && day < 31) ||
+    !(month > 0 && month <= 12) ||
+    !(year >= 2023) ||
+    !(hours >= 0 && hours < 24) ||
+    !(minutes >= 0 && minutes < 60)
+  );
+  const startingTimeOfConcert = `${day}. ${month}. ${year}. ${hours}:${minutes}`;
+
+  if (!checkDate(startingTimeOfConcert)) {
+    alert("Cannot add this performer");
+    return;
+  }
+
+  let lengthOfConcertInHours = "";
+  let additionalLengthOfConcertInMinutes = "";
+
+  do {
+    lengthOfConcertInHours = parseInt(
+      prompt("Enter length of concert in hours (max 2 hours)")
+    );
+    additionalLengthOfConcertInMinutes = parseInt(
+      prompt("Enter minutes (if needed 0 - 60 mins)")
+    );
+  } while (
+    !(lengthOfConcertInHours > 0 && lengthOfConcertInHours <= 2) ||
+    !(
+      additionalLengthOfConcertInMinutes >= 0 &&
+      additionalLengthOfConcertInMinutes < 60
+    )
+  );
+  const endingTimeOfConcert = `${lengthOfConcertInHours}:${additionalLengthOfConcertInMinutes}`;
+
+  const stage = validationAndFormatInputFromUser();
+
+  const id = performers[performers.length - 1].id + 1;
+
+  const newPerformer = {
+    id,
+    name,
+    about,
+    startingTimeOfConcert,
+    endingTimeOfConcert,
+    stage,
+    numberOfVisitors: 0,
+  };
+
+  performers.push(newPerformer);
+
+  alert("New performer added..");
+};
+
+const deletePerformer = () => {
+  let choice = "";
+
+  do {
+    choice = prompt("\nEnter performer you want to delete");
+
+    const matchingIndex = performers.findIndex(
+      (p) => p.name.toLowerCase() === choice.toLowerCase()
+    );
+
+    if (matchingIndex !== -1) {
+      const result = checkDate(performers[matchingIndex].startingTimeOfConcert);
+      console.log(result);
+      if (result) {
+        performers.filter((p) => p.id === matchingIndex);
+        console.log(matchingIndex);
+
+        console.log(performers);
+        alert(`\nDeleted ${performers[matchingIndex].name} from performers.`);
+        performers.splice(matchingIndex, 1);
+        console.log(performers);
+        break;
+      } else alert("\nCannot delete performer that had concert!");
+    } else alert("\nDidn't find that performer, try something else");
+  } while (choice !== "0");
+};
+
+const changePin = () => {
+  let newPassword = "";
+
+  do {
+    newPassword = prompt("\nSet up a new PIN that has from 4 to 8 characters");
+  } while (!(newPassword.length >= 4) || !(newPassword.length <= 8));
+
+  alert("\nNew pin setted");
+
+  return newPassword;
+};
+
 // 6 - admin panel
 const showAdminPanel = () => {
-  let userInputForPin = prompt("Enter PIN to acces admin panel:");
+  let userInputForPin = prompt("\nEnter PIN to acces admin panel:");
   let choice = "0";
 
   if (userInputForPin !== pin) {
-    alert("Wrong PIN!\n\nExitting..");
+    alert("\nWrong PIN!\n\nExitting..");
     return;
   }
 
@@ -227,25 +399,32 @@ const showAdminPanel = () => {
     4 - Change admin PIN
     0 - Exit`);
 
-    console.log(choice);
-
     switch (choice) {
       case "1":
+        enterNumberOfVisitors();
         break;
+
       case "2":
+        addNewPerformer();
         break;
+
       case "3":
+        deletePerformer();
         break;
+
       case "4":
+        pin = changePin();
         break;
+
       case "0":
+        alert("\nReturning to main menu..");
         break;
+
       default:
-        alert("Invalid choice..");
+        alert("\nInvalid choice..");
     }
   } while (choice !== "0");
 };
-// showAdminPanel();
 
 const showMainMenu = () => {
   let choice = "0";
@@ -269,7 +448,7 @@ const showMainMenu = () => {
         let dayOfConcert = "0";
         do {
           dayOfConcert = prompt(
-            "Enter (number) day of concert: '18' or '19' or '20'"
+            "\nEnter (number) day of concert: '18' or '19' or '20'"
           );
         } while (
           dayOfConcert !== "18" &&
@@ -283,7 +462,7 @@ const showMainMenu = () => {
         let enteredStage = "0";
         do {
           enteredStage = prompt(
-            "Enter stage: 'Daily' or 'Main' or 'After'"
+            "\nEnter stage: 'Daily' or 'Main' or 'After'"
           ).toLowerCase();
         } while (
           enteredStage !== "daily" &&
@@ -308,11 +487,11 @@ const showMainMenu = () => {
         break;
 
       case "0":
-        alert("Exiting console application..");
+        alert("\nExiting console application..");
         break;
 
       default:
-        alert("Invalid choice..");
+        alert("\nInvalid choice..");
     }
   } while (choice !== "0");
 };
